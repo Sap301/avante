@@ -1,0 +1,29 @@
+.borde-form {
+    border-top: 2px solid red;
+    border-right: 2px solid red;
+    border-bottom: 3px solid red;
+    border-left: 2px solid red;
+  }
+
+.borde-form-m {
+    border-top: 2px solid #0A1D85;
+    border-right: 2px solid #0A1D85;
+    border-bottom: 3px solid #0A1D85;
+    border-left: 2px solid #0A1D85;
+  }
+
+.fondo-boton{
+    background: #0A1D85;
+}
+
+.fondo-boton:hover{
+    background: #FF0000;
+}
+
+.titulo-form {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 400;
+	color: #041E7B;
+
+}

@@ -1,0 +1,291 @@
+$(document).ready(function(){ //Hacia arriba
+
+	$('#serie').attr("data-toggle","tooltip");
+	$('#serie').attr("title","Debe seleccionar el ancho");
+	$('#rin').attr("data-toggle","tooltip");
+	$('#rin').attr("title","Debe seleccionar una serie");
+	$('#modelo').attr("data-toggle","tooltip");
+	$('#modelo').attr("title","Debe seleccionar un marca");
+	$('#anio').attr("data-toggle","tooltip");
+	$('#anio').attr("title","Debe seleccionar un modelo");
+	$('#version').attr("data-toggle","tooltip");
+	$('#version').attr("title","Debe seleccionar un año");
+	$("#buscar_llanta").click(function(){
+		if($("#buscar_llanta").text()=="Buscar llantas..."){
+			$("#buscar_llanta").text('Ocultar buscar llantas...');
+			$(".bor").show();
+		}else{
+
+			if($("#buscar_llanta").text()=="Ocultar buscar llantas...")
+			{
+				$("#buscar_llanta").text('Buscar llantas...');
+				$(".bor").hide();
+			}
+		}
+		
+	});
+
+});
+
+function opBuscar(op)
+{
+	if(op=="1")
+	{
+		$("#divMedida").show();
+		$("#TDop1").addClass("SELOP");
+		$("#TDop2").removeClass("SELOP");
+	}
+	else
+	{
+		$("#divVehiculo").show();
+		$("#TDop1").removeClass("SELOP");
+		$("#TDop2").addClass("SELOP");
+	}
+};
+
+function cbAncho(ancho){
+	$("#listaSerie").empty().trigger('click');
+	$('#serie').attr("data-toggle","tooltip");
+	$('#serie').attr("title","Debe seleccionar el ancho");
+	$("#listaRin").empty().trigger('click');
+	$('#rin').attr("data-toggle","tooltip");
+	$('#rin').attr("title","Debe seleccionar una serie");
+	$.ajax({
+		type: "POST",
+		url: "libs/getGuia.php",
+		data: "op=serie&filtro="+ancho,
+		success: function(data){
+			if(data.trim()!=""){
+				var tmp=data.split(",");
+				if($('#serie').attr("data-toggle")!="dropdown"){
+					 $('#serie').attr("data-toggle","dropdown");
+					 $('#serie').removeAttr('title');
+				}
+				for(var x=0;x< tmp.length;x++)
+				{
+					var serie = tmp[x].replace("\n","");
+					if (serie.trim()!=""){
+						var valor = "<div class='col-sm-3 p-0 m-0'><ul class='multi-column-dropdown'><li><a href='#' onclick='cbSerie(\""+serie.trim()+"\");cbActivaBoton();' class='' id='serie1' value='"+serie+"'>"+serie.trim()+"</a></li></ul></div>";
+						$('#listaSerie').append(valor);
+					}
+					
+				}
+			}
+		}
+	});
+	$('#ancho').append().text(ancho);
+	$('#ancho').css("background-color", "#fce4ec");
+	$('#serie').append().text('Serie');
+	$('#serie').css("background-color", "#fff");
+	$('#serie').focus();
+	$('#rin').append().text('Rin');
+	$('#rin').css("background-color", "#fff");
+};
+
+function cbSerie(serie){
+	$("#listaRin").empty().trigger('click');
+	$('#rin').attr("data-toggle","tooltip");
+	$('#rin').attr("title","Debe seleccionar una serie");
+	$.ajax({
+		type: "POST",
+		url: "libs/getGuia.php",
+		data: "op=rin&ancho="+$("#ancho").text()+"&filtro="+serie,
+		success: function(data){
+			if(data.trim()!=""){
+				var tmp=data.split(",");
+				if($('#rin').attr("data-toggle")!="dropdown"){
+					$('#rin').attr("data-toggle","dropdown");
+					$('#rin').removeAttr('title');
+			   	}
+				for(var x=0;x< tmp.length;x++)
+				{
+					var rin = tmp[x].replace("\n","");
+					if (rin.trim()!="")
+					{
+						var valor = "<div class='col-sm-3 p-0 m-0'><ul class='multi-column-dropdown'><li><a href='#' onclick='cargarRin(\""+rin.trim()+"\"); cbActivaBoton();' class='' id='rin1' value='"+rin+"'>"+rin.trim()+"</a></li></ul></div>";
+						$('#listaRin').append(valor);
+					}
+				}
+			}
+		}
+	});
+	$('#serie').append().text(serie);
+	$('#serie').css("background-color", "#fce4ec");
+	$('#rin').append().text('Rin');
+	$('#rin').css("background-color", "#fff");
+	$('#rin').focus();
+};
+
+function cargarRin(rin){
+	$('#rin').append().text(rin);
+	$('#rin').css("background-color", "#fce4ec");
+	$('#btn_cb_buscar_medida').focus();
+	
+}
+
+function cargarVersion(version){
+	$('#version').append().text(version);
+	$('#version').val(version);
+	$('#version').css("background-color", "#fce4ec");
+	$('#btn_cb_buscar_vehiculo').focus();
+}
+
+function cbMarca(marca,descripcion){
+	$("#listaModelo").empty().trigger('click');
+	$('#modelo').attr("data-toggle","tooltip");
+	$('#modelo').attr("title","Debe seleccionar una marca");
+	$("#listaAnio").empty().trigger('click');
+	$('#anio').attr("data-toggle","tooltip");
+	$('#anio').attr("title","Debe seleccionar un modelo");
+	$("#listaVersion").empty().trigger('click');
+	$('#version').attr("data-toggle","tooltip");
+	$('#version').attr("title","Debe seleccionar un año");
+	$.ajax({
+		type: "POST",
+		url: "libs/getGuia.php",
+		data: "op=modelo&filtro="+marca,
+		success: function(data){
+			if(data.trim()!=""){
+				var tmp=data.split(",");
+				if($('#modelo').attr("data-toggle")!="dropdown"){
+					$('#modelo').attr("data-toggle","dropdown");
+					$('#modelo').removeAttr('title');
+			   	}
+				for(var x=0;x< tmp.length;x++)
+				{
+					var modelo = tmp[x].replace("\n","");
+					if (modelo.trim()!="")
+					{
+						var valor = "<div class='col-sm-4 m-0 p-0'><ul style='font-size: small;' class='multi-column-dropdown'><li><a href='#' class='' id='ancho1' onclick='cbModelo(\""+modelo.trim()+"\");cbActivaBoton();' value='"+modelo+"'>"+modelo.trim()+"</a></li></ul></div>";
+						$('#listaModelo').append(valor);
+					}
+				}
+			}
+		}
+	});
+	$('#marca').append().text(descripcion);
+	$('#marca').val(marca);
+	$('#marca').css("background-color", "#fce4ec");
+	$('#modelo').append().text('Modelo');
+	$('#modelo').css("background-color", "#fff");
+	$('#modelo').focus();
+	$('#anio').append().html('A&ntilde;o');
+	$('#anio').css("background-color", "#fff");
+	$('#version').append().html('Versi&oacute;n');
+	$('#version').css("background-color", "#fff");
+};
+
+function cbModelo(modelo){
+	if($("#modelo").text()!=null){
+		$("#listaAnio").empty().trigger('click');
+		$('#anio').attr("data-toggle","tooltip");
+		$('#anio').attr("title","Debe seleccionar un modelo");
+		$("#listaVersion").empty().trigger('click');
+		$('#version').attr("data-toggle","tooltip");
+		$('#version').attr("title","Debe seleccionar un año");
+		$.ajax({
+			type: "POST",
+			url: "libs/getGuia.php",
+			data: "op=anio&marca="+$("#marca").val()+"&filtro="+modelo,
+			success: function(data){
+				if(data.trim()!=""){
+					var tmp=data.split(",");
+					if($('#anio').attr("data-toggle")!="dropdown"){
+						$('#anio').attr("data-toggle","dropdown");
+						$('#anio').removeAttr('title');
+					}
+					for(var x=0;x< tmp.length;x++)
+					{
+						var anio = tmp[x].replace("\n","");
+						if (anio.trim()!="")
+						{
+							var valor = "<div class='col-sm-3 m-0 p-0'><ul style='font-size: small;' class='multi-column-dropdown'><li><a href='#' class='' id='ancho1' onclick='cbAnio(\""+anio.trim()+"\");cbActivaBoton();' value='"+anio+"'>"+anio.trim()+"</a></li></ul></div>";
+							$('#listaAnio').append(valor);
+						}	
+					}	
+				}
+			}
+		});
+		$('#modelo').append().text(modelo);
+		$('#modelo').val(modelo);
+		$('#modelo').css("background-color", "#fce4ec");
+		$('#anio').append().html('A&ntilde;o');
+		$('#anio').css("background-color", "#fff");
+		$('#anio').focus();
+		$('#version').append().html('Versi&oacute;n');
+		$('#version').css("background-color", "#fff");
+	}
+};
+
+function cbAnio(anio){
+	if($("#anio").text()!=null){
+		$("#listaVersion").empty().trigger('click');
+		$('#version').attr("data-toggle","tooltip");
+		$('#version').attr("title","Debe seleccionar un año");
+		$.ajax({
+			type: "POST",
+			url: "libs/getGuia.php",
+			data: "op=version&marca="+$("#marca").val()+"&modelo="+$("#modelo").val()+"&filtro="+anio,
+			success: function(data){
+				if(data.trim()!=""){
+					var tmp=data.split(",");
+					if($('#version').attr("data-toggle")!="dropdown" && tmp != null){
+						$('#version').attr("data-toggle","dropdown");
+						$('#version').removeAttr('title');
+					}
+					for(var x=0;x< tmp.length;x++)
+					{
+						var version = tmp[x].replace("\n","");
+						if (version.trim()!="")
+						{
+							var valor = "<div class='col-sm-6 m-0 p-0'><ul style='font-size: small;' class='multi-column-dropdown'><li><a href='#' class='' id='ancho1' onclick='cargarVersion(\""+version.trim()+"\"); cbActivaBoton();' value='"+version+"'>"+version.trim()+"</a></li></ul></div>";
+							$('#listaVersion').append(valor);
+						}
+					}
+				}
+			}
+		});
+		$('#anio').append().text(anio);
+		$('#anio').val(anio);
+		$('#anio').css("background-color", "#fce4ec");
+		$('#version').append().html('Versi&oacute;n');
+		$('#version').css("background-color", "#fff");
+		$('#version').focus();
+	}
+};
+
+function cbActivaBoton() {
+	$("#btn_cb_buscar_vehiculo").attr("disabled", true);
+	$("#btn_cb_buscar_medida").attr("disabled", true);
+	if($("#TDop1").attr("class")=='SELOP') {
+		if( $("#ancho").text()!="Ancho" && $("#ancho").text()!="" && $("#rin").text()!="Rin" && $("#rin").text()!="") {
+				$("#btn_cb_buscar_medida").attr("disabled", false);
+		}
+	} else if($("#TDop2").attr("class")=='SELOP') {
+		if( $("#marca").text()!="Marca" && $("#marca").val()!="" && $("#modelo").text()!="Modelo" && $("#modelo").val()!="" && $("#anio").val()!="Año" && $("#anio").val()!="" && $("#version").text()!="Versión") {
+			$("#btn_cb_buscar_vehiculo").attr("disabled", false);
+		}
+	}
+};
+
+function cbBuscarLlantas(){
+	if($("#TDop1").attr("class")=='SELOP') {
+		$("#cb_tipo_busqueda").val("1");
+		$("#cb_ancho").val($("#ancho").val()=="-1" ? "" : $("#ancho").text());
+		$("#cb_serie").val($("#serie").val()=="-1" ? "" : $("#serie").text());
+		$("#cb_rin").val($("#rin").val()=="-1" ? "" : $("#rin").text());
+	} else if($("#TDop2").attr("class")=='SELOP') {
+		$("#cb_tipo_busqueda").val("2");
+		$("#cb_marca").val($("#marca").val()=="-1" ? "" : $("#marca").val());
+		$("#cb_marca_desc").val($("#marca").val()=="-1" ? "" : $("#marca option:selected").val());
+		$("#cb_modelo").val($("#modelo").val()=="-1" ? "" : $("#modelo").text());
+		$("#cb_anio").val($("#anio").val()=="-1" ? "" : $("#anio").text());
+		$("#cb_version").val($("#version").val()=="-1" ? "" : $("#version").val());
+	} else {
+		return;
+	}
+
+	$("#form1").submit();
+};
+
+
